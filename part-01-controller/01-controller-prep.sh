@@ -98,10 +98,16 @@ for i in enable start;do systemctl $i mariadb;done
 
 # auto mysql setup (using this instead)
 
-mysql -e "UPDATE mysql.user SET Password = PASSWORD('password') WHERE User = 'root'"
-mysql -e "DROP USER ''@'localhost'"
-mysql -e "DROP USER ''@'$(hostname)'"
-mysql -e "DROP DATABASE test"
+# set root pw
+mysql -e "UPDATE mysql.user SET Password = PASSWORD('password') WHERE User = 'root';"
+# remote anonymous user
+mysql -e "DELETE FROM mysql.user WHERE User='';"
+# clobber remote root login
+mysql -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('loclahost', '127.0.0.1', '::1');"
+# remove test db
+mysql -e "DROP DATABASE IF EXISTS test;"
+mysql -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'"
+# reload privs
 mysql -e "FLUSH PRIVILEGES"
 
 mkdir ~/.sqlfiles # << for dbcreate script usage
