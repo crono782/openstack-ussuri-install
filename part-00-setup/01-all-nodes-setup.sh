@@ -26,7 +26,7 @@ EOF
 if [ "$(hostname)" == "controller" ]; then
   sed -i 's/^#allow.*/allow 10.10.10.0\/24/' /etc/chrony.conf
 else
-  sed -i -e '/^server 0/i server controller iburst' -e '/^server [0-9]/d' /etc/chrony.conf
+  sed -i -r -e '/^(server 0|pool)/i server controller iburst' -e '/^(server [0-9]|pool)/d' /etc/chrony.conf
 fi
 
 systemctl restart chronyd
