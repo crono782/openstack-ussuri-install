@@ -51,7 +51,7 @@ openstack user create --domain default --password password demouser
 
 if [ "$(openstack role list -c Name -f value|grep -c '^member$')" -lt 1 ]; then openstack role create member;fi
 
-openstack role add --project learnoss --user demouser member
+openstack role add --project demoproject --user demouser member
 
 cp ~/adminrc ~/demorc
 
