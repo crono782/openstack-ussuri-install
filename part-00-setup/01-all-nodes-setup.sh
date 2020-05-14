@@ -9,7 +9,7 @@
 
 # stop services we don't want
 
-for i in stop disable;do systemctl $i firewalld NetworkManager;done
+for i in stop disable;do systemctl $i firewalld;done
 
 # set host entries in lieu of DNS
 
