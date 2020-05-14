@@ -7,6 +7,10 @@
 # set up networks/ips
 # use whatever method you like, but make sure they persist reboot
 
+# some selinux policies missing, set permissive for now
+setenforce 0
+sed -i 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux
+
 # stop services we don't want
 
 for i in stop disable;do systemctl $i firewalld;done
