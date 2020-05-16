@@ -34,6 +34,7 @@ dnf -y install openstack-cinder
 ./conf.sh /etc/cinder/cinder.conf DEFAULT transport_url rabbit://openstack:${OS_RMQPW}@${OS_CONTROLLER_NM}
 ./conf.sh /etc/cinder/cinder.conf DEFAULT auth_strategy keystone
 ./conf.sh /etc/cinder/cinder.conf DEFAULT my_ip $OS_CONTROLLER_IP
+./conf.sh /etc/cinder/cinder.conf DEFAULT default_volume_type HDD
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken www_authenticate_uri http://${OS_CONTROLLER_NM}:5000
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken auth_url http://${OS_CONTROLLER_NM}:5000
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken memcached_servers ${OS_CONTROLLER_NM}:11211
