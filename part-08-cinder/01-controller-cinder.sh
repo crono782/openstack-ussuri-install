@@ -1,14 +1,16 @@
 #!/bin/bash
 
+source ~/os-env
+
 # create cinder database
 
-./dbcreate.sh cinder cinder password
+./dbcreate.sh cinder cinder $OS_CINDERDBPW
 
 # create user, add role, create services and endpoints
 
 source ~/adminrc
 
-openstack user create --domain default --password password cinder
+openstack user create --domain default --password $OS_CINDERPW cinder
 
 openstack role add --project service --user cinder admin
 
@@ -28,19 +30,19 @@ dnf -y install openstack-cinder
 
 ./bak.sh /etc/cinder/cinder.conf
 
-./conf.sh /etc/cinder/cinder.conf database connection mysql+pymysql://cinder:password@controller/cinder
-./conf.sh /etc/cinder/cinder.conf DEFAULT transport_url rabbit://openstack:password@controller
+./conf.sh /etc/cinder/cinder.conf database connection mysql+pymysql://cinder:${OS_CINDERDBPW}@${OS_CONTROLLER_NM}/cinder
+./conf.sh /etc/cinder/cinder.conf DEFAULT transport_url rabbit://openstack:${OS_RMQPW}@${OS_CONTROLLER_NM}
 ./conf.sh /etc/cinder/cinder.conf DEFAULT auth_strategy keystone
-./conf.sh /etc/cinder/cinder.conf DEFAULT my_ip 10.10.10.100
-./conf.sh /etc/cinder/cinder.conf keystone_authtoken www_authenticate_uri http://controller:5000
-./conf.sh /etc/cinder/cinder.conf keystone_authtoken auth_url http://controller:5000
-./conf.sh /etc/cinder/cinder.conf keystone_authtoken memcached_servers controller:11211
+./conf.sh /etc/cinder/cinder.conf DEFAULT my_ip $OS_CONTROLLER_IP
+./conf.sh /etc/cinder/cinder.conf keystone_authtoken www_authenticate_uri http://${OS_CONTROLLER_NM}:5000
+./conf.sh /etc/cinder/cinder.conf keystone_authtoken auth_url http://${OS_CONTROLLER_NM}:5000
+./conf.sh /etc/cinder/cinder.conf keystone_authtoken memcached_servers ${OS_CONTROLLER_NM}:11211
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken auth_type password
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken project_domain_name default
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken user_domain_name default
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken project_name service
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken username cinder
-./conf.sh /etc/cinder/cinder.conf keystone_authtoken password password
+./conf.sh /etc/cinder/cinder.conf keystone_authtoken password $OS_CINDERPW
 ./conf.sh /etc/cinder/cinder.conf oslo_concurrency lock_path /var/lib/cinder/tmp
 
 # populate database
@@ -49,7 +51,7 @@ su -s /bin/sh -c "cinder-manage db sync" cinder
 
 # configure nova to use cinder
 
-./conf.sh /etc/nova/nova.conf cinder os_region_name RegionOne
+./conf.sh /etc/nova/nova.conf cinder os_region_name $OS_REGION
 
 # restart compute service
 

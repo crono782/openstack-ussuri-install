@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ~/os-env
+
 # make some controller specific helper scripts
 
 # script for adding service endpoints
@@ -26,7 +28,7 @@ CREATE DATABASE \$dbname;
 GRANT ALL PRIVILEGES ON \$dbname.* TO '\$dbuser'@'localhost' IDENTIFIED BY '\$pass';
 GRANT ALL PRIVILEGES ON \$dbname.* TO '\$dbuser'@'%' IDENTIFIED BY '\$pass';
 EOS
-mysql -u root -ppassword < ~/.sqlfiles/\$dbname-\$dbuser.sql
+mysql -u root -p$OS_MYSQLPW < ~/.sqlfiles/\$dbname-\$dbuser.sql
 EOF
 
 chmod +x dbcreate.sh
@@ -49,7 +51,7 @@ export OS_PROJECT_DOMAIN_NAME=Default
 export OS_USER_DOMAIN_NAME=Default
 export OS_PROJECT_NAME=admin
 export OS_USERNAME=admin
-export OS_PASSWORD=password
+export OS_PASSWORD=$OS_ADMINPW
 export OS_AUTH_URL=http://controller:5000/v3
 export OS_IDENTITY_API_VERSION=3
 export OS_IMAGE_API_VERSION=2
@@ -70,19 +72,13 @@ unset OS_IMAGE_API_VERSION
 export PS1='[\u@\h \W]\$ '
 EOF
 
-# set up SSH keys for convenience
-
-#ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
-
-#for i in controller compute network block object dbaas;do ssh-copy-id -o StrictHostKeyChecking=no $i;done
-
 # install/setup mysql database
 
 dnf -y install mariadb mariadb-server python3-PyMySQL
 
 cat << EOF > /etc/my.cnf.d/openstack.cnf
 [mysqld]
-bind-address = 10.10.10.100
+bind-address = $OS_CONTROLLER_IP
 default-storage-engine = innodb
 innodb_file_per_table = on
 max_connections = 4096
@@ -92,18 +88,14 @@ EOF
 
 for i in enable start;do systemctl $i mariadb;done
 
-# manual mysql setup (not using this currently)
-
-#mysql_secure_installation
-
-# auto mysql setup (using this instead)
+# mysql setup (replicates mysql_secure_installation)
 
 # set root pw
-mysql -e "UPDATE mysql.user SET Password = PASSWORD('password') WHERE User = 'root';"
+mysql -e "UPDATE mysql.user SET Password = PASSWORD('$OS_MYSQLPW') WHERE User = 'root';"
 # remote anonymous user
 mysql -e "DELETE FROM mysql.user WHERE User='';"
 # clobber remote root login
-mysql -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('loclahost', '127.0.0.1', '::1');"
+mysql -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
 # remove test db
 mysql -e "DROP DATABASE IF EXISTS test;"
 mysql -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'"
@@ -114,13 +106,12 @@ mkdir ~/.sqlfiles # << for dbcreate script usage
 
 # install/stup message queue
 
-dnf -y install epel-release
-yum-config-manager --disable epel
-dnf -y install --enablerepo=epel rabbitmq-server
+dnf -y install centos-release-rabbitmq-38
+dnf -y --enablerepo=PowerTools install rabbitmq-server
 
 for i in enable start;do systemctl $i rabbitmq-server;done
 
-rabbitmqctl add_user openstack password
+rabbitmqctl add_user openstack $OS_RMQPW
 
 rabbitmqctl set_permissions openstack ".*" ".*" ".*"
 
@@ -128,7 +119,7 @@ rabbitmqctl set_permissions openstack ".*" ".*" ".*"
 
 dnf -y install memcached python3-memcached
 
-sed -i 's/OPTIONS="-l 127.0.0.1,::1"/OPTIONS="-l 127.0.0.1,::1,controller"/' /etc/sysconfig/memcached
+sed -i "s/OPTIONS=\"-l 127.0.0.1,::1\"/OPTIONS=\"-l 127.0.0.1,::1,$OS_CONTROLLER_NM\"/" /etc/sysconfig/memcached
 
 for i in enable start;do systemctl $i memcached;done
 
@@ -136,7 +127,7 @@ for i in enable start;do systemctl $i memcached;done
 
 dnf -y install etcd
 
-sed -ri -e '/(ETCD_LISTEN|ETCD_INITIAL)/ s/^#//' -e 's/localhost/10.10.10.100/g' -e '/(ETCD_NAME|ETCD_INITIAL)/ s/default/controller/' -e 's/(etcd-cluster)/\1-01/' /etc/etcd/etcd.conf
+sed -ri -e '/(ETCD_LISTEN|ETCD_INITIAL)/ s/^#//' -e "s/localhost/$OS_CONTROLLER_IP/g" -e "/(ETCD_NAME|ETCD_INITIAL)/ s/default/$OS_CONTROLLER_NM/" -e 's/(etcd-cluster)/\1-01/' /etc/etcd/etcd.conf
 
 for i in enable start;do systemctl $i etcd;done
 

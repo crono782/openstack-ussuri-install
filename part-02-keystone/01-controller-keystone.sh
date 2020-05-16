@@ -1,8 +1,10 @@
 #!/bin/bash
 
+source ~/os-env
+
 # create keystone database
 
-./dbcreate.sh keystone keystone password
+./dbcreate.sh keystone keystone $OS_KEYSTONEDBPW
 
 # install packages
 
@@ -11,7 +13,7 @@ dnf -y install openstack-keystone httpd python3-mod_wsgi
 # conf file work
 ./bak.sh /etc/keystone/keystone.conf
 
-./conf.sh /etc/keystone/keystone.conf database connection mysql+pymysql://keystone:password@controller/keystone
+./conf.sh /etc/keystone/keystone.conf database connection mysql+pymysql://keystone:${OS_KEYSTONEDBPW}@${OS_CONTROLLER_NM}/keystone
 ./conf.sh /etc/keystone/keystone.conf token provider fernet
 
 # sync database
@@ -26,14 +28,14 @@ keystone-manage credential_setup --keystone-user keystone --keystone-group keyst
 
 # bootstrap keystone
 
-keystone-manage bootstrap --bootstrap-password password \
-  --bootstrap-admin-url http://controller:5000/v3/ \
-  --bootstrap-internal-url http://controller:5000/v3/ \
-  --bootstrap-public-url http://controller:5000/v3/ \
-  --bootstrap-region-id RegionOne
+keystone-manage bootstrap --bootstrap-password $OS_ADMINPW \
+  --bootstrap-admin-url http://$OS_CONTROLLER_NM:5000/v3/ \
+  --bootstrap-internal-url http://$OS_CONTROLLER_NM:5000/v3/ \
+  --bootstrap-public-url http://$OS_CONTROLLER_NM:5000/v3/ \
+  --bootstrap-region-id $OS_REGION
 
 # setup/initialize apache/wsgi
-sed -i 's/^#ServerName.*/ServerName controller/' /etc/httpd/conf/httpd.conf
+sed -i "s/^#ServerName.*/ServerName $OS_CONTROLLER_NM/" /etc/httpd/conf/httpd.conf
 
 ln -s /usr/share/keystone/wsgi-keystone.conf /etc/httpd/conf.d/
 
@@ -45,19 +47,19 @@ source ~/adminrc
 
 openstack project create --domain default --description "Service Project" service
 
-openstack project create --domain default --description "Demo Project" demoproject
+if [ "$OS_CREATEDEMO" == "TRUE" ]; then
+  openstack project create --domain default --description "Demo Project" demoproject
 
-openstack user create --domain default --password password demouser
+  openstack user create --domain default --password password demouser
 
-if [ "$(openstack role list -c Name -f value|grep -c '^member$')" -lt 1 ]; then openstack role create member;fi
+  openstack role add --project demoproject --user demouser member
 
-openstack role add --project demoproject --user demouser member
+  cp ~/adminrc ~/demorc
 
-cp ~/adminrc ~/demorc
-
-sed -i -e '/OS_PROJECT_NAME/ s/admin/demoproject/'\
- -e '/OS_USERNAME/ s/admin/demouser/'\
- -e '/OS_PASSWORD/ s/password/password/'\
- -e '/PS1/ s/$red/$yellow/' ~/demorc
+  sed -i -e '/OS_PROJECT_NAME/ s/admin/demoproject/'\
+   -e '/OS_USERNAME/ s/admin/demouser/'\
+   -e '/OS_PASSWORD/ s/password/password/'\
+   -e '/PS1/ s/$red/$yellow/' ~/demorc
+fi
 
 exit

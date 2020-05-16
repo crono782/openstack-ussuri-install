@@ -1,12 +1,14 @@
 #!/bin/bash
 
+source ~/os-env
+
 # create placement database
 
-./dbcreate.sh placement placement password
+./dbcreate.sh placement placement $OS_PLACEMENTDBPW
 
 # create user, add role, create service and endpoints
 
-openstack user create --domain default --password password placement
+openstack user create --domain default --password $OS_PLACEMENTPW placement
 
 openstack role add --project service --user placement admin
 
@@ -23,15 +25,15 @@ dnf -y install openstack-placement-api python3-osc-placement
 ./bak.sh /etc/placement/placement.conf
 
 ./conf.sh /etc/placement/placement.conf api auth_strategy keystone
-./conf.sh /etc/placement/placement.conf placement_database connection mysql+pymysql://placement:password@controller/placement
-./conf.sh /etc/placement/placement.conf keystone_authtoken auth_url http://controller:5000/v3
-./conf.sh /etc/placement/placement.conf keystone_authtoken memcached_servers controller:11211
+./conf.sh /etc/placement/placement.conf placement_database connection mysql+pymysql://placement:$OS_PLACEMENTDBPW@$OS_CONTROLLER_NM/placement
+./conf.sh /etc/placement/placement.conf keystone_authtoken auth_url http://$OS_CONTROLLER_NM:5000/v3
+./conf.sh /etc/placement/placement.conf keystone_authtoken memcached_servers $OS_CONTROLLER_NM:11211
 ./conf.sh /etc/placement/placement.conf keystone_authtoken auth_type password
 ./conf.sh /etc/placement/placement.conf keystone_authtoken project_domain_name Default
 ./conf.sh /etc/placement/placement.conf keystone_authtoken user_domain_name Default
 ./conf.sh /etc/placement/placement.conf keystone_authtoken project_name service
 ./conf.sh /etc/placement/placement.conf keystone_authtoken username placement
-./conf.sh /etc/placement/placement.conf keystone_authtoken password password
+./conf.sh /etc/placement/placement.conf keystone_authtoken password $OS_PLACEMENTPW
 
 # add config to apache conf. packaging bug still misses this part
 

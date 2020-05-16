@@ -7,39 +7,38 @@
 # set up networks/ips
 # use whatever method you like, but make sure they persist reboot
 
-# some selinux policies missing, set permissive for now
+# copy os-env file to node
+
+source ~/os-env
+
+# set selinux permissive for now, some policies missing breaks a few things
+
 setenforce 0
 sed -i 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux
 
-# stop services we don't want
+# stop firewall for now
 
 for i in stop disable;do systemctl $i firewalld;done
 
 # set host entries in lieu of DNS
 
 cat << EOF >> /etc/hosts
-10.10.10.100 controller
-10.10.10.101 compute
-10.10.10.102 network
-10.10.10.103 block
-10.10.10.104 object
+$OS_CONTROLLER_IP $OS_CONTROLLER_NM
+$OS_COMPUTE_IP $OS_COMPUTE_NM
+$OS_NETWORK_IP $OS_NETWORK_NM
+$OS_BLOCK_IP $OS_BLOCK_NM
+$OS_OBJECT_IP $OS_BLOCK_NM
 EOF
 
 # set up NTP
 
-if [ "$(hostname)" == "controller" ]; then
-  sed -i 's/^#allow.*/allow 10.10.10.0\/24/' /etc/chrony.conf
+if [ "$(hostname -s)" == "$OS_CONTROLLER_NM" ]; then
+  sed -i "s/^#allow.*/allow $OS_MGT_NET\/$OS_MGT_MASK/" /etc/chrony.conf
 else
-  sed -i -r -e '/^(server 0|pool)/i server controller iburst' -e '/^(server [0-9]|pool)/d' /etc/chrony.conf
+  sed -i -r -e "/^(server 0|pool)/i server $OS_CONTROLLER_NM iburst" -e '/^(server [0-9]|pool)/d' /etc/chrony.conf
 fi
 
 systemctl restart chronyd
-
-# install base openstack packages
-
-dnf -y install centos-release-openstack-train
-dnf -y upgrade
-dnf -y install python3-openstackclient openstack-selinux
 
 # create some helper scripts
 
@@ -74,5 +73,24 @@ fi
 EOF
 
 chmod +x conf.sh
+
+# install base openstack packages
+# rpm for release not available yet, set it up manually
+mkdir ~/ussuri-release
+cd ~/ussuri-release
+dnf download centos-release-openstack-train
+rpm2cpio centos-release-openstack-train*.rpm|cpio -idmv
+mv ~/ussuri-release/etc/yum.repos.d/CentOS-OpenStack-train.repo ~/ussuri-release/etc/yum.repos.d/CentOS-OpenStack-ussuri.repo
+sed -i 's/train/ussuri/g' ~/ussuri-release/etc/yum.repos.d/CentOS-OpenStack-ussuri.repo
+cp -p ~/ussuri-release/etc/yum.repos.d/* /etc/yum.repos.d/
+cp -p ~/ussuri-release/etc/pki/rpm-gpg/* /etc/pki/rpm-gpg/
+cd ~
+rm -rf ~/ussuri-release
+wget -P /etc/pki/rpm-gpg/ https://www.centos.org/keys/RPM-GPG-KEY-CentOS-SIG-Cloud
+wget -P /etc/pki/rpm-gpg/ https://www.centos.org/keys/RPM-GPG-KEY-CentOS-SIG-Virtualization-RDO
+wget -P /etc/pki/rpm-gpg/ https://www.centos.org/keys/RPM-GPG-KEY-CentOS-SIG-Storage
+
+dnf -y upgrade
+dnf -y install python3-openstackclient openstack-selinux
 
 exit

@@ -26,7 +26,7 @@ l=$(sed -n '/# filter = /=' /etc/lvm/lvm.conf|tail -n1);sed -i "${l}a filter = [
 
 # install packages
 
-dnf -y install openstack-cinder targetcli python-keystone
+dnf -y --enablerepo=PowerTools install openstack-cinder targetcli python3-keystone
 
 # conf file work
 
@@ -35,9 +35,10 @@ dnf -y install openstack-cinder targetcli python-keystone
 ./conf.sh /etc/cinder/cinder.conf database connection mysql+pymysql://cinder:password@controller/cinder
 ./conf.sh /etc/cinder/cinder.conf DEFAULT transport_url rabbit://openstack:password@controller
 ./conf.sh /etc/cinder/cinder.conf DEFAULT auth_strategy keystone
-./conf.sh /etc/cinder/cinder.conf DEFAULT my_ip 10.10.10.54
+./conf.sh /etc/cinder/cinder.conf DEFAULT my_ip 10.10.10.103
 ./conf.sh /etc/cinder/cinder.conf DEFAULT enabled_backends lvm-ssd,lvm-hdd
 ./conf.sh /etc/cinder/cinder.conf DEFAULT glance_api_servers http://controller:9292
+./conf.sh /etc/cinder/cinder.conf DEFAULT default_volume_type HDD
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken www_authenticate_uri http://controller:5000
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken auth_url http://controller:5000
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken memcached_servers controller:11211
@@ -47,9 +48,9 @@ dnf -y install openstack-cinder targetcli python-keystone
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken project_name service
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken username cinder
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken password password
-./conf.sh /etc/cinder/cinder.conf backend_default volume_driver cinder.volume.drivers.lvm.LVMVolumeDriver
-./conf.sh /etc/cinder/cinder.conf backend_default target_protocol iscsi
-./conf.sh /etc/cinder/cinder.conf backend_default target_helper lioadm
+./conf.sh /etc/cinder/cinder.conf backend_defaults volume_driver cinder.volume.drivers.lvm.LVMVolumeDriver
+./conf.sh /etc/cinder/cinder.conf backend_defaults target_protocol iscsi
+./conf.sh /etc/cinder/cinder.conf backend_defaults target_helper lioadm
 ./conf.sh /etc/cinder/cinder.conf lvm-ssd volume_group cindervols-ssd
 ./conf.sh /etc/cinder/cinder.conf lvm-ssd volume_backend_name LVM-SSD
 ./conf.sh /etc/cinder/cinder.conf lvm-hdd volume_group cindervols-hdd

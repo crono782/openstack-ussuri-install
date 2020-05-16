@@ -1,2 +1,2 @@
-# openstack-train-install
+# openstack-ussuri-install
 CentOS 8
