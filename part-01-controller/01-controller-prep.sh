@@ -119,7 +119,7 @@ rabbitmqctl set_permissions openstack ".*" ".*" ".*"
 
 dnf -y install memcached python3-memcached
 
-sed -i "s/OPTIONS=\"-l 127.0.0.1,::1\"/OPTIONS=\"-l 127.0.0.1,::1,$OS_CONTROLLER_NM\"/" /etc/sysconfig/memcached
+sed -i "s/OPTIONS=\"-l 127.0.0.1,::1\"/OPTIONS=\"\"/" /etc/sysconfig/memcached
 
 for i in enable start;do systemctl $i memcached;done
 
