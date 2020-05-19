@@ -104,7 +104,7 @@ mysql -e "FLUSH PRIVILEGES"
 
 mkdir ~/.sqlfiles # << for dbcreate script usage
 
-# install/stup message queue
+# install/setup message queue
 
 dnf -y install centos-release-rabbitmq-38
 dnf -y --enablerepo=PowerTools install rabbitmq-server

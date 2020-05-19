@@ -1,8 +1,11 @@
 #!/bin/bash
 
 # some verifications
-
-source ~/demorc
+if [ "$OS_CREATEDEMO" == "TRUE" ]; then
+  source ~/demorc
+else
+  source ~/adminrc
+fi
 
 swift stat
 openstack container create container1
