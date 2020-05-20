@@ -1,6 +1,17 @@
 #!/bin/sh
 
-# create env file
+source ~/os-env
+
+cat << EOF >> /etc/hosts
+$OS_CONTROLLER_IP $OS_CONTROLLER_NM
+$OS_COMPUTE_IP $OS_COMPUTE_NM
+$OS_NETWORK_IP $OS_NETWORK_NM
+$OS_BLOCK_IP $OS_BLOCK_NM
+$OS_OBJECT_IP $OS_OBJECT_NM
+$OS_CEPH_IP $OS_CEPH_NM
+EOF
+
+# create ceph env file
 
 cat << EOF > ~/ceph-env
 OS_CEPH_IP='10.10.10.110'

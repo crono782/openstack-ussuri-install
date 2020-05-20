@@ -36,25 +36,6 @@ dnf -y --enablerepo=PowerTools install openstack-glance
 ./conf.sh /etc/glance/glance-api.conf keystone_authtoken project_name service
 ./conf.sh /etc/glance/glance-api.conf keystone_authtoken username glance
 ./conf.sh /etc/glance/glance-api.conf keystone_authtoken password $OS_GLANCEPW
-./conf.sh /etc/glance/glance-api.conf glance_store stores file,http
-./conf.sh /etc/glance/glance-api.conf glance_store default_store file
-./conf.sh /etc/glance/glance-api.conf glance_store filesystem_store_datadir /var/lib/glance/images/
 ./conf.sh /etc/glance/glance-api.conf paste_deploy flavor keystone
-
-# sync database and start services
-
-su -s /bin/sh -c "glance-manage db_sync" glance
-
-for i in enable start;do systemctl $i openstack-glance-api;done
-
-# download cirros test image and upload to glance for verification
-
-dnf -y install wget
-
-wget http://download.cirros-cloud.net/0.5.1/cirros-0.5.1-x86_64-disk.img
-
-openstack image create "cirros" --file cirros-0.5.1-x86_64-disk.img --disk-format qcow2 --container-format bare --public
-
-rm -f cirros-0.5.1-x86_64-disk.img
 
 exit
