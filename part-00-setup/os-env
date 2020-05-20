@@ -14,7 +14,7 @@ OS_COMPUTE_NM='compute'
 OS_NETWORK_NM='network'
 OS_BLOCK_NM='block'
 OS_OBJECT_NM='object'
-OS_CEPH='ceph'
+OS_CEPH_NM='ceph'
 #==DB==
 OS_MYSQLPW='password'
 OS_KEYSTONEDBPW='password'
