@@ -26,10 +26,11 @@ scp /etc/ceph/ceph.conf controller:/etc/ceph
 
 # on controller
 
-chgrp /etc/ceph/ceph.client.images.keyring
+chgrp glance /etc/ceph/ceph.client.images.keyring
 chmod 640 /etc/ceph/ceph.client.images.keyring
 
 cat << EOF >> /etc/ceph/ceph.conf
+
 [client.images]
 keyring = /etc/ceph/ceph.client.images.keyring
 EOF
