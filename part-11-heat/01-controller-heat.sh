@@ -31,7 +31,7 @@ openstack role add --domain heat --user-domain heat --user heat_domain_admin adm
 openstack role create heat_stack_owner
 
 if [ "$OS_CREATEDEMO" == "TRUE" ]; then
-  openstack role add --project learnoss --user demouser heat_stack_owner
+  openstack role add --project demoproject --user demouser heat_stack_owner
 fi
 
 openstack role create heat_stack_user
@@ -52,7 +52,7 @@ dnf -y install openstack-heat-api openstack-heat-api-cfn openstack-heat-engine
 ./conf.sh /etc/heat/heat.conf DEFAULT stack_domain_admin_password $OS_HEATDAPW
 ./conf.sh /etc/heat/heat.conf DEFAULT stack_user_domain_name heat
 ./conf.sh /etc/heat/heat.conf keystone_authtoken auth_uri http://${OS_CONTROLLER_NM}:5000
-./conf.sh /etc/heat/heat.conf keystone_authtoken auth_url http://${OS_CONTROLER_NM}:5000
+./conf.sh /etc/heat/heat.conf keystone_authtoken auth_url http://${OS_CONTROLLER_NM}:5000
 ./conf.sh /etc/heat/heat.conf keystone_authtoken memcached_servers ${OS_CONTROLLER_NM}:11211
 ./conf.sh /etc/heat/heat.conf keystone_authtoken auth_type password
 ./conf.sh /etc/heat/heat.conf keystone_authtoken project_domain_name default

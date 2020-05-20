@@ -4,7 +4,7 @@
 
 cat << EOF > ~/ceph-env
 CEPH_NM='ceph'
-CEPH_IP='10.10.10.111'
+CEPH_IP='10.10.10.110'
 CEPH_PUB_NET='10.10.10.0'
 CEPH_PUB_MASK='24'
 FSID=$(uuidgen)
@@ -65,16 +65,15 @@ ceph-mon --mkfs -i $CEPH_NM --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
 chown -R ceph:ceph /var/lib/ceph/mon
 chown -R ceph:ceph /etc/ceph
 
-for i in enable start status;do systemctl $i ceph-mon@${CEPH_NM};done
+for i in enable start;do systemctl $i ceph-mon@${CEPH_NM};done
+ceph mon enable-msgr2
 
 # create manager 
 
 mkdir /var/lib/ceph/mgr/ceph-${CEPH_NM}
 ceph auth get-or-create mgr.`hostname -s` mon 'allow profile mgr' osd 'allow *' mds 'allow *' -o /var/lib/ceph/mgr/ceph-${CEPH_NM}/keyring
 chown -R ceph:ceph /var/lib/ceph/mgr
-for i in enable start status;do systemctl $i ceph-mgr@${CEPH_NM};done
-
-ceph mon enable-msgr2
+for i in enable start;do systemctl $i ceph-mgr@${CEPH_NM};done
 
 # create OSDs from vdb and vdc disks
 
@@ -86,7 +85,7 @@ mkdir -p /var/lib/ceph/radosgw/ceph-rgw.${CEPH_NM}
 ceph auth get-or-create client.rgw.${CEPH_NM} osd 'allow rwx' mon 'allow rw' -o /var/lib/ceph/radosgw/ceph-rgw.${CEPH_NM}/keyring
 chown -R ceph:ceph /var/lib/ceph/radosgw/
 
-for i in enable start status;do systemctl $i ceph-radosgw@rgw.${CEPH_NM};done
+for i in enable start;do systemctl $i ceph-radosgw@rgw.${CEPH_NM};done
 
 # verify stuff
 
