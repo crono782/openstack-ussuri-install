@@ -1,7 +1,5 @@
 #!/bin/sh
 
-source ~/os-env
-
 # create env file
 
 cat << EOF > ~/ceph-env
@@ -79,7 +77,7 @@ for i in enable start;do systemctl $i ceph-mgr@${OS_CEPH_NM};done
 
 # create OSDs from vdb and vdc disks
 
-for i in b c;do ceph-volume lvm create --data /dev/vd${i};done
+for i in b c d;do ceph-volume lvm create --data /dev/vd${i};done
 
 # create rados gw
 
