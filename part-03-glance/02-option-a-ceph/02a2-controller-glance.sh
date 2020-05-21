@@ -5,7 +5,7 @@
 source ~/os-env
 
 dnf -y install epel-release
-dnf -y install python3-rbd
+dnf -y install python3-rbd ceph-common
 pip3 install boto3 
 
 ./conf.sh /etc/glance/glance-api.conf DEFAULT enabled_backends ceph:rbd

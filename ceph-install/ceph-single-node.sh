@@ -86,9 +86,9 @@ ceph auth get-or-create mgr.`hostname -s` mon 'allow profile mgr' osd 'allow *' 
 chown -R ceph:ceph /var/lib/ceph/mgr
 for i in enable start;do systemctl $i ceph-mgr@${OS_CEPH_NM};done
 
-# create OSDs from vdb and vdc disks
+# create 4 OSDs from vdb, vdc, vdd, vde disks
 
-for i in b c d;do ceph-volume lvm create --data /dev/vd${i};done
+for i in b c d e;do ceph-volume lvm create --data /dev/vd${i};done
 
 # create rados gw
 
@@ -104,3 +104,4 @@ ceph -s
 
 curl http://${OS_CEPH_NM}:${OS_CEPH_CVWEBPORT}
 
+exit
