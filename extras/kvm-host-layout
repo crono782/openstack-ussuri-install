@@ -2,11 +2,11 @@
 
 CPU: 2X Intel Xeon X5670 @ 2.93GHz
 
-RAM: 40G
+RAM: 140G
 
-DISK:
-~360G (RAID0) OS + VM OS disks
-~300G (RAID0) VM storage
+STORAGE:
+vm images mounted on /data/images
+vm data disks mounted on /data/disks
 
 NETWORKS:
 2x 1G cards in 802.3ad bond
@@ -15,8 +15,8 @@ NETWORKS:
  - VLAN 2: tenant network
  - vlan 3: provider network
 3 bridges for VM use
- - br-mgmt: management
- - br-tnt: tenant
- - br-prv: provider
+ - br0: management
+ - br2: tenant
+ - br4: provider
 1 internal bridge
  - br-svc
