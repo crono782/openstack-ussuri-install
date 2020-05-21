@@ -11,3 +11,10 @@ read -p 'int: ' bsint;read -p 'ip/mask: ' bsip;echo removing old connection;nmcl
 # example of bootstrap of provider third (provider) nic
 
 read -p 'int: ' bsint;echo removing old connection;nmcli con del 'Wired connection 2';echo setting interface;nmcli con add type ethernet ifname $bsint con-name $bsint ipv4.method disabled ipv6.method ignore
+
+# make life simple and clone this repo to each host
+
+dnf -y install git
+cd ~
+git clone https://github.com/crono782/openstack-ussuri-install.git
+cp ~/openstack-ussuri-install/part-00-setup/os-env ~
