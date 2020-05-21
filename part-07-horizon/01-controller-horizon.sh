@@ -24,13 +24,12 @@ sed -i "s|^POLICY_FILES_PATH.*|POLICY_FILES_PATH = '/etc/openstack-dashboard'|" 
 
 # set up redirection
 
-sed -i '/^WSGISocketPrefix/d'
+sed -i '/^WSGISocketPrefix/d' /etc/httpd/conf.d/openstack-dashboard.conf
 sed -i '1iWSGIApplicationGroup %{GLOBAL}' /etc/httpd/conf.d/openstack-dashboard.conf 
 #sed -i '1iRedirectMatch permanent  ^/$ /dashboard' /etc/httpd/conf.d/openstack-dashboard.conf 
 sed -i '1i<VirtualHost *:80>' /etc/httpd/conf.d/openstack-dashboard.conf 
 sed -i '1iWSGISocketPrefix run/wsgi' /etc/httpd/conf.d/openstack-dashboard.conf
-echo 'WSGISocketPrefix run/wsgi' >> /etc/httpd/conf.d/openstack-dashboard.conf
-
+echo '</VirtualHost>' >> /etc/httpd/conf.d/openstack-dashboard.conf 
 # restart services
 
 systemctl restart httpd memcached

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# OPTION B: LVM BACKED CINDER
+
 # make sure packages are installed
 
 dnf -y install lvm2 device-mapper-persistent-data
