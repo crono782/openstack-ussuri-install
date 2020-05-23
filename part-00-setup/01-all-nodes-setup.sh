@@ -14,7 +14,7 @@ source ~/os-env
 # set selinux permissive for now, some policies missing breaks a few things
 
 setenforce 0
-sed -i 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux
+sed -i 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/selinux/config
 
 # stop firewall for now
 
@@ -67,7 +67,7 @@ if [ "\$(grep -c "^\[\$section\]" \$file)" -lt 1  ]; then
   echo [\$section] >> \$file
 fi
 if [ ! -z "\$(sed -n "/\[\$section\]/,/\[/{/^\$key =.*/=}" \$file)" ]; then
-  sed -i "/\[\$section\]/,/\[/{s/\$key[ =].*/\$key = \$value/}" \$file
+  sed -i "/\[\$section\]/,/\[/{s|\$key[ =].*|\$key = \$value|}" \$file
 else
   sed -i "/^\[\$section\]/a \$key = \$value" \$file
 fi

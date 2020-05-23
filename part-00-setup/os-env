@@ -25,7 +25,6 @@ OS_NOVADBPW='password'
 OS_NOVACELLDBPW='password'
 OS_NEUTRONDBPW='password'
 OS_CINDERDBPW='password'
-OS_SWIFTDBPW='password'
 OS_HEATDBPW='password'
 #==PW==
 OS_ADMINPW='password'

@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [! -f ~/os-env ]; then
+  echo missing os-env file
+  exit
+fi
+
 source ~/os-env
 
 cat << EOF >> /etc/hosts
@@ -19,7 +24,7 @@ OS_CEPH_NM='ceph'
 OS_CEPH_PUB_NET='10.10.10.0'
 OS_CEPH_PUB_MASK='24'
 OS_CEPH_FSID=$(uuidgen)
-OS_CEPH_CVWEBPORT='7480'
+OS_CEPH_CVWEBPORT='8080'
 EOF
 
 source ~/ceph-env
@@ -59,6 +64,7 @@ osd crush chooseleaf type = 0
 [client.rgw.$OS_CEPH_NM]
 host = $OS_CEPH_NM
 rgw dns name = $OS_CEPH_NM
+rgw_frontends = "civetweb port=$OS_CEPH_CVWEBPORT"
 EOF
 
 # create keyrings and bootstrap monitor

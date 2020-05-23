@@ -18,12 +18,14 @@ rbd pool init volumes
 ceph osd pool create ecvolumes 8
 ceph osd pool create ecvolumes_data 32 erasure ostack
 ceph osd pool set ecvolumes_data allow_ec_overwrites true
+rbd pool init ecvolumes
+rbd pool init ecvolumes_data
 
 # create auth keyrings
 
 ceph auth get-or-create client.volumes mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=volumes, allow rx pool=images' -o /etc/ceph/ceph.client.volumes.keyring
 
-ceph auth get-or-create client.ecvolumes mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=ecvolumes, allow rwx pool=ecvolumes_data, allow rx pool=images' -o /etc/ceph/ceph.client.volumes.keyring
+ceph auth get-or-create client.ecvolumes mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=ecvolumes, allow rwx pool=ecvolumes_data, allow rx pool=images' -o /etc/ceph/ceph.client.ecvolumes.keyring
 
 # send keyrings and conf files to controller for further distribution
 

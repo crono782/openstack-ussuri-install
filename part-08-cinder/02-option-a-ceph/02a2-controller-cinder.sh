@@ -5,13 +5,15 @@
 source ~/os-env
 
 dnf -y install epel-release
-dnf -y install python3-rbd
+dnf -y install python3-rbd ceph-common
 
 if [ ! -f /etc/ceph/ceph.conf ]; then
   mv ~/ceph.conf /etc/ceph
 fi
 mv ~/ceph.client.volumes.keyring /etc/ceph
 mv ~/ceph.client.ecvolumes.keyring /etc/ceph
+mv ~/client.volumes.key /etc/ceph
+mv ~/client.ecvolumes.key /etc/ceph
 
 chgrp cinder /etc/ceph/ceph.client.volumes.keyring
 chmod 640 /etc/ceph/ceph.client.volumes.keyring
@@ -56,8 +58,5 @@ scp /etc/ceph/cinder.volumes.uuid.txt $OS_COMPUTE_NM:~
 scp /etc/ceph/cinder.ecvolumes.uuid.txt $OS_COMPUTE_NM:~
 scp /etc/ceph/client.volumes.key $OS_COMPUTE_NM:~
 scp /etc/ceph/client.ecvolumes.key $OS_COMPUTE_NM:~
-rm -f /etc/ceph/cinder.volumes.uuid.txt
-rm -f /etc/ceph/cinder.ecvolumes.uuid.txt
-rm -f /etc/ceph/client.volumes.key
-rm -f /etc/ceph/client.ecvolumes.key
 
+exit

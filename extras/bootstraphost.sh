@@ -12,9 +12,18 @@ read -p 'int: ' bsint;read -p 'ip/mask: ' bsip;echo removing old connection;nmcl
 
 read -p 'int: ' bsint;echo removing old connection;nmcli con del 'Wired connection 2';echo setting interface;nmcli con add type ethernet ifname $bsint con-name $bsint ipv4.method disabled ipv6.method ignore
 
-# make life simple and clone this repo to each host
+# make life simple. clone repo and setup openstack node (not ceph)
 
 dnf -y install git
 cd ~
 git clone https://github.com/crono782/openstack-ussuri-install.git
 cp ~/openstack-ussuri-install/part-00-setup/os-env ~
+~/openstack-ussuri-install/part-00-setup/01-all-nodes-setup.sh
+
+# make life simple. clone repo and setup ceph node (not openstack)
+dnf -y install git
+cd ~
+git clone https://github.com/crono782/openstack-ussuri-install.git
+cp ~/openstack-ussuri-install/part-00-setup/os-env ~
+
+exit

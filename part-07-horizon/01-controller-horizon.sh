@@ -34,4 +34,8 @@ echo '</VirtualHost>' >> /etc/httpd/conf.d/openstack-dashboard.conf
 
 systemctl restart httpd memcached
 
+# login to http://<controller> to test horizon
+# admin/<specified admin password> OR
+# demouser/password if specified
+
 exit
