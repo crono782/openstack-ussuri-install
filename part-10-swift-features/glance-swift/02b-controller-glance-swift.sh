@@ -1,6 +1,7 @@
 #!/bin/bash
 # - OPTION B: MULTI TENANT
 # images stored in tenant account
+# prob doesn't make sense for ceph backend
 
 # conf file work
 

@@ -1,6 +1,7 @@
 #!/bin/bash
 # - OPTION A: SINGLE TENANT
 # all images stored in service account
+# doesn't make a lot of sense for ceph backend
 
 source ~/os-env
 

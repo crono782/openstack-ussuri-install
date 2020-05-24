@@ -1,5 +1,6 @@
 #!/bin/bash
 # store glance images in swift
+# prob doesn't make sense for ceph backend
 
 # conf file work
 

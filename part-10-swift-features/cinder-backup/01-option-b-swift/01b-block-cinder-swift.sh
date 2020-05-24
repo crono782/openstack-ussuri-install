@@ -1,5 +1,5 @@
 #!/bin/bash
-# store cinder backups in swift
+# enable cinder backups for swift
 
 source ~/os-env
 
