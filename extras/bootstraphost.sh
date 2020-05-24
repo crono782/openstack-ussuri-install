@@ -14,16 +14,16 @@ read -p 'int: ' bsint;echo removing old connection;nmcli con del 'Wired connecti
 
 # make life simple. clone repo and setup openstack node (not ceph)
 
-dnf -y install git
-cd ~
-git clone https://github.com/crono782/openstack-ussuri-install.git
-cp ~/openstack-ussuri-install/part-00-setup/os-env ~
-~/openstack-ussuri-install/part-00-setup/01-all-nodes-setup.sh
+curl -o ~/os-env https://raw.githubusercontent.com/crono782/openstack-ussuri-install/master/part-00-setup/os-env
+curl https://raw.githubusercontent.com/crono782/openstack-ussuri-install/master/part-00-setup/01-all-nodes-setup.sh|bash
+
+#dnf -y install git
+#cd ~
+#git clone https://github.com/crono782/openstack-ussuri-install.git
+#cp ~/openstack-ussuri-install/part-00-setup/os-env ~
+#~/openstack-ussuri-install/part-00-setup/01-all-nodes-setup.sh
 
 # make life simple. clone repo and setup ceph node (not openstack)
-dnf -y install git
-cd ~
-git clone https://github.com/crono782/openstack-ussuri-install.git
-cp ~/openstack-ussuri-install/part-00-setup/os-env ~
+curl -o ~/os-env https://raw.githubusercontent.com/crono782/openstack-ussuri-install/master/part-00-setup/os-env
 
 exit
