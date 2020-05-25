@@ -1,1 +1,0 @@
-../common/01-controller-glance.sh
