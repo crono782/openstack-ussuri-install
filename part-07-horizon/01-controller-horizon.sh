@@ -30,6 +30,7 @@ sed -i '1iWSGIApplicationGroup %{GLOBAL}' /etc/httpd/conf.d/openstack-dashboard.
 sed -i '1i<VirtualHost *:80>' /etc/httpd/conf.d/openstack-dashboard.conf 
 sed -i '1iWSGISocketPrefix run/wsgi' /etc/httpd/conf.d/openstack-dashboard.conf
 echo '</VirtualHost>' >> /etc/httpd/conf.d/openstack-dashboard.conf 
+
 # restart services
 
 systemctl restart httpd memcached

@@ -6,12 +6,6 @@ source ~/os-env
 
 source ~/adminrc
 
-openstack user create --domain default --password $OS_SWIFTPW swift
-
-openstack role add --project service --user swift admin
-
-openstack service create --name swift --description "OpenStack Object Storage" object-store
-
 ./endpoint.sh object-store 8080/v1/AUTH_%\(project_id\)s
 
 # install packages

@@ -7,8 +7,8 @@ source ~/os-env
 
 # conf file work
 
-./conf.sh /etc/glance/glance-api.conf glance_store default_swift_reference glance-swift
-./conf.sh /etc/glance/glance-api.conf glance_store swift_store_config_file /etc/glance/glance-swift.conf
+./conf.sh /etc/glance/glance-api.conf glance.store.swift.store default_swift_reference glance-swift
+./conf.sh /etc/glance/glance-api.conf glance.store.swift.store swift_store_config_file /etc/glance/glance-swift.conf
 
 cat << EOF >> /etc/glance/glance-swift.conf
 [glance-swift]

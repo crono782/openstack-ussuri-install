@@ -5,7 +5,7 @@
 
 # conf file work
 
-./conf.sh /etc/glance/glance-api.conf glance_store swift_store_multi_tenant True
+./conf.sh /etc/glance/glance-api.conf glance.store.swift.store swift_store_multi_tenant True
 
 # restart api
 

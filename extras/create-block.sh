@@ -7,6 +7,11 @@ qemu-img create -f qcow2 object1.qcow2 20G
 qemu-img create -f qcow2 -F qcow2 -b centos7tpl.qcow2 controller.qcow2
 
 # example to create block devices for this tutorial
+# with ceph
 for i in ceph controller compute network;do qemu-img create -f qcow2 -F qcow2 -b /data/images/centos8.qcow2 /data/images/os-$i.qcow2;done
-
 for i in $(seq 1 4);do qemu-img create -f qcow2 /data/disks/os-ceph-data$i.qcow2 20G;done
+
+# without ceph
+for i in controller compute network block object;do qemu-img create -f qcow2 -F qcow2 -b /data/images/centos8.qcow2 /data/images/os-$i.qcow2;done
+for i in $(seq 1 4);do qemu-img create -f qcow2 /data/disks/os-block-data$i.qcow2 20G;done
+for i in $(seq 1 3);do qemu-img create -f qcow2 /data/disks/os-object-data$i.qcow2 20G;done

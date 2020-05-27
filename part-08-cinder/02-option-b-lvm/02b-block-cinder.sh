@@ -2,6 +2,8 @@
 
 # OPTION B: LVM BACKED CINDER
 
+source ~/os-env
+
 # make sure packages are installed
 
 dnf -y install lvm2 device-mapper-persistent-data
@@ -50,9 +52,9 @@ dnf -y --enablerepo=PowerTools install openstack-cinder targetcli python3-keysto
 ./conf.sh /etc/cinder/cinder.conf backend_defaults target_protocol iscsi
 ./conf.sh /etc/cinder/cinder.conf backend_defaults target_helper lioadm
 ./conf.sh /etc/cinder/cinder.conf lvm-ssd volume_group cindervols-ssd
-./conf.sh /etc/cinder/cinder.conf lvm-ssd volume_backend_name LVM-SSD
+./conf.sh /etc/cinder/cinder.conf lvm-ssd volume_backend_name lvm-ssd
 ./conf.sh /etc/cinder/cinder.conf lvm-hdd volume_group cindervols-hdd
-./conf.sh /etc/cinder/cinder.conf lvm-hdd volume_backend_name LVM-HDD
+./conf.sh /etc/cinder/cinder.conf lvm-hdd volume_backend_name lvm-ssd
 ./conf.sh /etc/cinder/cinder.conf oslo_concurrency lock_path /var/lib/cinder/tmp
 
 # enable and start services

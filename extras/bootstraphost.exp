@@ -1,0 +1,29 @@
+#!/usr/bin/expect
+
+set vhost [lindex $argv 0];
+set hostnm [lindex $argv 1];
+set int [lindex $argv 2];
+set ip [lindex $argv 3];
+
+set timeout 10
+
+spawn virsh console $vhost
+
+expect "Escape character is"
+send "\n"
+
+expect "login: " {
+  send "root\n"
+  expect "Password: "
+  send "Dblh3lix\n"
+} "~]# " {
+  send "\n"
+}
+
+send "hostnamectl set-hostname $hostnm\n"
+send "nmcli con mod $int ipv4.address $ip\n"
+send "reboot\n"
+
+expect "Rebooting."
+send ""
+interact

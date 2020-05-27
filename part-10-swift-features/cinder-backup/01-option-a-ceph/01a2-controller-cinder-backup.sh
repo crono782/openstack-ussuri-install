@@ -5,8 +5,6 @@ source ~/os-env
 
 # ensure package installed
 
-dnf -y install openstack-cinder
-
 mv ~/ceph.client.ecbackup.keyring /etc/ceph
 mv ~/client.ecbackup.key /etc/ceph
 
@@ -26,8 +24,6 @@ EOF
 ./conf.sh /etc/cinder/cinder.conf DEFAULT backup_ceph_user ecbackup
 ./conf.sh /etc/cinder/cinder.conf DEFAULT backup_ceph_pool ecbackup
 ./conf.sh /etc/cinder/cinder.conf DEFAULT backup_ceph_conf /etc/ceph/ceph.conf
-
-#./conf.sh /etc/cinder/cinder.conf DEFAULT backup_swift_url http://${OS_CONTROLLER_NM}:8080/v1/AUTH_
 
 # enable and start backup service
 

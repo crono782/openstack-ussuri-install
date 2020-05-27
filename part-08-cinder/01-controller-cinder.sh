@@ -35,6 +35,7 @@ dnf -y install openstack-cinder
 ./conf.sh /etc/cinder/cinder.conf DEFAULT auth_strategy keystone
 ./conf.sh /etc/cinder/cinder.conf DEFAULT my_ip $OS_CONTROLLER_IP
 ./conf.sh /etc/cinder/cinder.conf DEFAULT default_volume_type HDD
+./conf.sh /etc/cinder/cinder.conf DEFAULT enabled_backends lvm-ssd,lvm-hdd
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken www_authenticate_uri http://${OS_CONTROLLER_NM}:5000
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken auth_url http://${OS_CONTROLLER_NM}:5000
 ./conf.sh /etc/cinder/cinder.conf keystone_authtoken memcached_servers ${OS_CONTROLLER_NM}:11211
@@ -54,7 +55,7 @@ su -s /bin/sh -c "cinder-manage db sync" cinder
 
 ./conf.sh /etc/nova/nova.conf cinder os_region_name $OS_REGION
 
-# restart compute service
+# restart nova api service
 
 systemctl restart openstack-nova-api
 
