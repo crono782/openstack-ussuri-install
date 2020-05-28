@@ -76,21 +76,8 @@ EOF
 chmod +x conf.sh
 
 # install base openstack packages
-# rpm for release not available yet, set it up manually
-mkdir ~/ussuri-release
-cd ~/ussuri-release
-dnf download centos-release-openstack-train
-rpm2cpio centos-release-openstack-train*.rpm|cpio -idmv
-mv ~/ussuri-release/etc/yum.repos.d/CentOS-OpenStack-train.repo ~/ussuri-release/etc/yum.repos.d/CentOS-OpenStack-ussuri.repo
-sed -i 's/train/ussuri/g' ~/ussuri-release/etc/yum.repos.d/CentOS-OpenStack-ussuri.repo
-rm -f ~/ussuri-release/etc/yum.repos.d/ceph-nautilus.repo
-cp -p ~/ussuri-release/etc/yum.repos.d/* /etc/yum.repos.d/
-cp -p ~/ussuri-release/etc/pki/rpm-gpg/* /etc/pki/rpm-gpg/
-cd ~
-rm -rf ~/ussuri-release
 
-dnf -y install https://download.ceph.com/rpm-octopus/el8/noarch/ceph-release-1-1.el8.noarch.rpm
-
+dnf -y install centos-release-openstack-ussuri
 dnf -y upgrade
 dnf -y install python3-openstackclient openstack-selinux
 

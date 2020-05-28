@@ -18,7 +18,7 @@ openstack service create --name heat --description "Orchestration" orchestration
 
 openstack service create --name heat-cfn --description "Orchestration"  cloudformation
 
-./endpoint.sh orchestration 8004/v1/%\(tenant_id\)s
+./endpoint.sh orchestration 8004/v1/%\(project_id\)s
 
 ./endpoint.sh cloudformation 8000/v1
 

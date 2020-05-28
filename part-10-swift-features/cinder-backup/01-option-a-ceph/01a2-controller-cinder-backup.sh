@@ -3,8 +3,6 @@
 
 source ~/os-env
 
-# ensure package installed
-
 mv ~/ceph.client.ecbackup.keyring /etc/ceph
 mv ~/client.ecbackup.key /etc/ceph
 

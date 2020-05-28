@@ -106,8 +106,8 @@ mkdir ~/.sqlfiles # << for dbcreate script usage
 
 # install/setup message queue
 
-dnf -y install centos-release-rabbitmq-38
-dnf -y --enablerepo=PowerTools install rabbitmq-server
+#dnf -y install centos-release-rabbitmq-38
+#dnf -y --enablerepo=PowerTools install rabbitmq-server
 
 for i in enable start;do systemctl $i rabbitmq-server;done
 

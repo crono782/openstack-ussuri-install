@@ -15,7 +15,7 @@ openstack subnet create --network provider --subnet-range 203.0.113.0/24 --gatew
 source ~/demorc
 
 openstack network create selfservice
-openstack subnet create --network selfservice --subnet-range 10.10.100.0/24 --gateway 10.10.100.1 --dns-nameserver 8.8.8.8 selfservice
+openstack subnet create --network selfservice --subnet-range 10.10.100.0/24 --gateway 10.10.100.1 --allocation-pool start=10.10.100.10,end=10.10.100.100 --dns-nameserver 8.8.8.8 selfservice
 
 openstack router create router1
 openstack router add subnet router1 selfservice
